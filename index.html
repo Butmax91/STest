@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <table class="taskList">
+        <caption>
+            Todo-list
+        </caption>
+        <thead>
+            <tr>
+                <td class="headName">Ім'я</td>
+                <td class="headStatus ">Статус</td>
+                <td class="headDate">Завдання</td>
+                <td class=" headDate">Дата</td>
+            </tr>
+        </thead>
+        <tbody>
+           <!-- <tr>
+                <td class="name">Купити продукти</td>
+                <td class="status">
+                    <select>
+                        <option >Очікується</option>
+                        <option >В роботі</option>
+                        <option >Завершено</option>
+                    </select>
+                </td>
+                <td class="task">Піти в магазин та купити продукти</td>
+                <td class="date">25-06-91</td>
+            </tr>-->
+        </tbody>
+    </table>
+    <form class="addTask">
+        <input type="text" id="taskName">
+        <input type="text" id="taskDesc">
+        <input type="date" id="taskDate">
+        <button class="addButton" disabled>add</button>
+    </form>
+    <script src="main.js"></script>
+</body>
+</html>
