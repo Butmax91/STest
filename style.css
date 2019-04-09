@@ -16,10 +16,19 @@
 .taskList td{
     border:1px solid black;
     padding: 10px;
+    position: relative;
 }
 
 .addTask{
     margin:30px auto;
     display: flex;
 
+}
+.modal{
+    position: fixed;
+    top:0;
+    bottom:0;
+    left:0;
+    right: 0;
+    background: rgba(0,0,0,0.6);
 }
