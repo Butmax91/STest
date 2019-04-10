@@ -17,16 +17,18 @@ function drowTable(tasks = checkLocalStorage()){
             let tableRow = document.createElement('tr');
             tableRow.innerHTML =
                 `
-                <td class="name " data-id="${tasks[i].taskId}" ">${tasks[i].taskName}</td>
-                <td   >
-                    <select class="status" data-id="${tasks[i].taskId}">
-                        <option ${+tasks[i].taskStatus === 0 ? 'selected' : ''}>Очікується</option>
-                        <option ${+tasks[i].taskStatus === 1 ? 'selected' : ''}>В роботі</option>
-                        <option ${+tasks[i].taskStatus === 2 ? 'selected' : ''}>Завершено</option>
-                    </select>
+                <td class="name " data-id="${tasks[i].taskId}" ">
+                    <span class="was_changed" style="display: ${tasks[i].isChanged === true ? 'block' : 'none'}">Відредаговано</span>
+                    ${tasks[i].taskName}
+                </td>
+                <td class="statusContainer" data-status="${tasks[i].taskStatus}"  >
+                 ${+tasks[i].taskStatus === 0 ? 'Очікується' : +tasks[i].taskStatus === 1 ? 'В роботі' : 'Завершено'   }
+                       
                 </td>
                 <td class="task cor" data-id="${tasks[i].taskId}" data-canBeChanged="${tasks[i].canBeChanged}" >${tasks[i].taskDesc}</td>
-                <td class="date cor" data-id="${tasks[i].taskId}">${tasks[i].taskDate}</td>
+                <td class="date cor" data-id="${tasks[i].taskId}">${tasks[i].taskDate} 
+                    <span class="correct" data-id="${tasks[i].taskId}" data-canBeChanged="${tasks[i].canBeChanged}">✎</span>
+                </td>
                 `;
             tableRow.className = 'changed';
             tableBody.appendChild(tableRow);
@@ -42,7 +44,6 @@ function drowTable(tasks = checkLocalStorage()){
     }
 }
 drowTable();
-
 
 function addToLocalStorage(data){
     tasks = checkLocalStorage();
@@ -114,17 +115,27 @@ function sortBy(){
     let headName = document.querySelector('.headName');
     let headDate = document.querySelector('.headDate');
     headName.addEventListener('click', ()=>{
+        const sortName = document.querySelector('.taskList .headName span');
+        document.querySelector('.taskList .headDate span').style.display = 'none';
+        sortName.style.display = 'inline-block';
         let data = checkLocalStorage();
         asc = asc*-1;
+        sortName.style.transform = `rotate(${90*-asc +90+'deg'})`;
         data.sort((a,b)=>{
             if (a.taskName > b.taskName)return asc;
             else return -asc;
         });
+
         drowTable(data)
-    })
+    });
     headDate.addEventListener('click', ()=>{
+        const sortHead = document.querySelector('.taskList .headDate span');
+        document.querySelector('.taskList .headName span').style.display = 'none';
+        sortHead.style.display = 'inline-block';
+        headName.children = [];
         let data = checkLocalStorage();
         asc = asc*-1;
+        sortHead.style.transform = `rotate(${90*asc +90+'deg'})`;
         data.sort((a,b)=>{
             if (a.taskDate > b.taskDate)return asc;
             else return -asc;
@@ -136,89 +147,190 @@ sortBy();
 
 function correction(){
     const table = document.querySelector('.taskList');
-    const data = checkLocalStorage();
-    table.addEventListener('dblclick',(e)=>{
-        const data = checkLocalStorage();
-        for (let i = 0; i < e.target.classList.length ; i++) {
-           console.log((e.target.classList[i] === 'cor') && !!e.target.dataset.canbechanged);
-           console.log(!!e.target.dataset.canbechanged);
-            if ((e.target.classList[i] === 'cor') && !!e.target.dataset.canbechanged ){
-                console.log(!e.target.dataset.canbechanged);
-                const modal = document.createElement('div');
-                const correctionInput = document.createElement('input');
-                correctionInput.value = e.target.innerText;
-                const addButton = document.createElement('button');
-                addButton.innerText = 'Change';
-                correctionInput.style.cssText =
-                    `
-                    position:absolute;
-                    top:${e.target.getBoundingClientRect().y+'px'};
-                    left:${e.target.getBoundingClientRect().x+'px'};
-                    width: ${e.target.getBoundingClientRect().width+'px'};
-                    height: ${e.target.getBoundingClientRect().height+'px'};
-                    padding:${getComputedStyle(e.target).padding};
-                    
-                    `;
-                addButton.style.cssText =
-                    `
-                    position:absolute;
-                    top:${e.target.getBoundingClientRect().y+e.target.getBoundingClientRect().height+10+'px'};
-                    left:${e.target.getBoundingClientRect().x +e.target.getBoundingClientRect().width - 
-                    60 +'px'};
-                    width:60px;
-                    padding:5px ;
-                    cursor:pointer;
-                    `;
-                modal.className = 'modal';
-                console.log(e.target.getBoundingClientRect());
-                modal.appendChild(correctionInput);
-                modal.appendChild(addButton);
-                document.body.appendChild(modal);
-                modal.addEventListener('click',(event)=>{
-                        if(event.target === addButton){
-                        for (let j = 0; j < data.length  ; j++) {
-                            console.log(data[j].taskId);
-                            console.log(e.target);
-                            if (data[j].taskId === +e.target.dataset.id){
-                                data[j].taskDesc = correctionInput.value;
-                                data[j].isChanged = true;
-                                break;
-                            }
-                        }
-                        console.log(data);
-                        localStorage.tasks = JSON.stringify(data);
-                        drowTable();
-                        document.body.removeChild(modal);
-                    }
-                })
+
+    table.addEventListener('click',(e)=>{
+        if(e.target.className === 'correct'){
+            const data = checkLocalStorage();
+            const corectRow = document.createElement('div');
+            const coreactName = document.createElement('textarea');
+            if (e.path[2].children[0].innerText.indexOf('Відредаговано') !== -1){
+                coreactName.value = (e.path[2].children[0].innerText.substring('Відредаговано'.length)).trim();
+            }else{
+                coreactName.value = (e.path[2].children[0].innerText).trim();
             }
-        }
-    });
-    const select = document.querySelectorAll('select');
-    table.addEventListener('change',(e)=>{
-        const data = checkLocalStorage();
-        if(e.target.className === 'status'){
-            for (let i = 0; i <data.length ; i++) {
-                if (+data[i].taskId === +e.target.dataset.id){
+            coreactName.disabled = (e.target.dataset.canbechanged !== 'true');
+            const correctStatus = document.createElement('div');
+            correctStatus.innerHTML =
+                `
+                <select class="status" 
+                style="background: white;outline: none; border:none; width:100%; height: 100%"
+               ${(e.target.dataset.canbechanged !== 'true') ? 'disabled' : ''}
+                >
+                         <option ${+e.path[2].children[1].dataset.status === 0 ? 'selected' : ''}>Очікується</option>
+                        <option ${+e.path[2].children[1].dataset.status === 1 ? 'selected' : ''}>В роботі</option>
+                        <option ${+e.path[2].children[1].dataset.status === 2 ? 'selected' : ''}>Завершено</option>
+                    </select>
+                `;
+            const coreactDesc = document.createElement('textarea');
+            coreactDesc.disabled = e.target.dataset.canbechanged !== 'true';
+            coreactDesc.value = e.path[2].children[2].innerText;
 
-                    console.log(1)
-                    if(e.target.value === 'Завершено'){
-                            data[i].canBeChanged = false;
-                            data[i].taskStatus=2;
-                        }
-                    else if(e.target.value === 'В роботі') {
-                            data[i].canBeChanged = true;
-                            data[i].taskStatus = 1;
+            const coreactDate = document.createElement('textarea');
+            coreactDate.value = e.path[2].children[3].innerHTML.substring(0,10);
+            coreactDate.disabled = (e.target.dataset.canbechanged !== 'true');
 
-                    }else{
-                        data[i].canBeChanged = true;
-                        data[i].taskStatus = 0;
+            const changeButton = document.createElement('button');
+            changeButton.innerText = 'Change';
+            const exitButton = document.createElement('button');
+            exitButton.innerText = '✕';
+            const deleteTask = document.createElement('button');
+            deleteTask.innerText = 'Видалити';
+
+
+            corectRow.appendChild(coreactName);
+            corectRow.appendChild(correctStatus);
+            corectRow.appendChild(coreactDesc);
+            corectRow.appendChild(coreactDate);
+            corectRow.appendChild(changeButton);
+            corectRow.appendChild(exitButton);
+            corectRow.appendChild(deleteTask);
+            document.body.appendChild(corectRow);
+            corectRow.style.cssText =
+                `
+                position : absolute;
+                top:0;
+                bottom:0;
+                left:0;
+                right:0;
+                background:rgba(0,0,0,0.6);                         
+                `;
+            coreactName.style.cssText =
+                `
+                position:absolute;
+                top:${e.path[2].children[0].getBoundingClientRect().y+'px'};
+                left:${e.path[2].children[0].getBoundingClientRect().x+'px'};
+                width: ${e.path[2].children[0].getBoundingClientRect().width+'px'};
+                height: ${e.path[2].children[0].getBoundingClientRect().height+'px'};
+                padding:20px;
+                border:none;
+                outline:none;
+                background:white;
+                 box-shadow: 0px 0px 0px 2px black;
+                
+                `;
+            correctStatus.style.cssText =
+                `
+                position:absolute;
+                top:${e.path[2].children[1].getBoundingClientRect().y+'px'};
+                left:${e.path[2].children[1].getBoundingClientRect().x+'px'};
+                width: ${e.path[2].children[1].getBoundingClientRect().width+'px'};
+                height: ${e.path[2].children[1].getBoundingClientRect().height+'px'};
+                margin : auto;
+                background:white;
+                box-shadow: 0px 0px 0px 2px black;
+                
+                `;
+            coreactDesc.style.cssText =
+                `
+                position:absolute;
+                top:${e.path[2].children[2].getBoundingClientRect().y+'px'};
+                left:${e.path[2].children[2].getBoundingClientRect().x+'px'};
+                width: ${e.path[2].children[2].getBoundingClientRect().width+'px'};
+                height: ${e.path[2].children[2].getBoundingClientRect().height+'px'};
+                padding:${getComputedStyle(e.path[2].children[2]).padding};
+                border:none;
+                outline:none;
+                box-shadow: 0px 0px 0px 2px black;
+                background:white;
+                `;
+            coreactDate.style.cssText =
+                `
+                position:absolute;
+                top:${e.path[2].children[3].getBoundingClientRect().y+'px'};
+                left:${e.path[2].children[3].getBoundingClientRect().x+'px'};
+                width: ${e.path[2].children[3].getBoundingClientRect().width+'px'};
+                height: ${e.path[2].children[3].getBoundingClientRect().height+'px'};
+                padding:${getComputedStyle(e.path[2].children[3]).padding};
+                border:none;
+                outline:none;
+                background:white;
+                 box-shadow: 0px 0px 0px 2px black;
+                `;
+            changeButton.style.cssText =
+                `
+                 position:absolute;
+                 top:${e.path[2].children[3].getBoundingClientRect().y+e.path[2].children[3].getBoundingClientRect().height+10+'px'};
+                 left:${e.path[2].children[3].getBoundingClientRect().x +60+'px'};
+                 padding:10px;
+                 border:none;
+                 outline:none;
+                 background:white;
+                 cursor:pointer;
+                 `;
+            exitButton.style.cssText =
+                `
+                 position:absolute;
+                 top:${e.path[2].children[3].getBoundingClientRect().y -10+'px'};
+                 left:${e.path[2].children[3].getBoundingClientRect().x +130+'px'};
+                 padding:10px;
+                 font-size:24px;
+                 border:none;
+                 outline:none;
+                 color:white;
+                 background:none;
+                 cursor:pointer;
+            
+                `;
+            deleteTask.style.cssText =
+                `
+                 position:absolute;
+                 top:${e.path[2].children[3].getBoundingClientRect().y +30+'px'};
+                 left:${e.path[2].children[3].getBoundingClientRect().x +130+'px'};
+                 padding:10px;
+                 border:none;
+                 outline:none;
+                 color:white;
+                 background:red;
+                 cursor:pointer;
+            
+                `;
+            exitButton.addEventListener('click',()=>{
+                document.body.removeChild(corectRow);
+            });
+            deleteTask.addEventListener('click',(event)=>{
+                for (let i = 0; i < data.length ; i++) {
+                    if (+data[i].taskId === +e.target.dataset.id){
+                        data.splice(i,1);
+                        break
                     }
                 }
-            }
+                localStorage.tasks = JSON.stringify(data);
+                document.body.removeChild(corectRow);
+                drowTable();
+
+            });
+            changeButton.addEventListener('click',(event)=>{
+                const changedData = {
+                    isChanged : true,
+                    taskDate : coreactDate.value,
+                    taskDesc : coreactDesc.value,
+                    taskName : coreactName.value,
+                    taskStatus : correctStatus.children[0].value === 'Очікується' ? 0 : (correctStatus.children[0].value === 'В роботі' ? 1 : 2),
+                    canBeChanged : correctStatus.children[0].value !== 'Завершено' ,
+                    taskId : e.target.dataset.id,
+                };
+                for (let i = 0; i < data.length ; i++) {
+                    if (+data[i].taskId === +e.target.dataset.id){
+                        data[i] = changedData;
+                        break
+                    }
+                }
+                localStorage.tasks = JSON.stringify(data);
+                document.body.removeChild(corectRow);
+                drowTable();
+            })
+
         }
-        localStorage.tasks = JSON.stringify(data);
-        drowTable();
-    })
+    });
 }
 correction();

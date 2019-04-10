@@ -2,26 +2,60 @@
     padding: 0;
     margin: 0;
     box-sizing: border-box;
+    font-family: arial;
+    color:#1f487c;
 }
 .taskList{
     border-collapse: collapse;
     position: relative;
     margin: auto;
-
+}
+.taskList caption{
+    padding: 20px;
+    font-size: 24px;
+}
+.taskList thead tr td{
+    background: #2d75c8;
+    color:white;
+}
+.taskList thead tr td span{
+    color:white;
+    display: none;
+}
+.taskList  tr:nth-child(2n) td,
+.taskList  tr:nth-child(2n) select
+{
+    background: #b9d8ff;
+    color:#2d75c8;
 }
 .taskList .headName,
 .taskList .headDate{
     cursor: pointer;
 }
 .taskList td{
-    border:1px solid black;
-    padding: 10px;
+    border:1px solid #505050;
+    padding: 20px;
     position: relative;
+    max-width: 300px;
 }
 
-.addTask{
-    margin:30px auto;
-    display: flex;
+.taskList .date{
+    padding-right: 25px;
+}
+span.correct{
+    display: block;
+    width: 20px;
+    height: 20px;
+    position: absolute;
+    right:0;
+    top:0;
+    font-size: 20px;
+    cursor: pointer;
+}
+.taskList .status:active{
+    background: none;
+    border:none;
+
 
 }
 .modal{
