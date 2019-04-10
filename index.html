@@ -9,10 +9,16 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <h1>Лист завдань</h1>
+    <form class="addTask">
+        <input type="text" id="taskName" placeholder="Введіть назыу завдвння">
+        <input type="text" id="taskDesc" placeholder="Введіть опис завдання">
+        <input type="date" id="taskDate" placeholder="Введіть дату завдання">
+        <button class="addButton" disabled>add</button>
+    </form>
+    <hr>
+
     <table class="taskList">
-        <caption>
-            Todo-list
-        </caption>
         <thead>
             <tr>
                 <td class="headName">Ім'я <span>▼</span></td>
@@ -24,12 +30,7 @@
         <tbody>
         </tbody>
     </table>
-    <form class="addTask">
-        <input type="text" id="taskName">
-        <input type="text" id="taskDesc">
-        <input type="date" id="taskDate">
-        <button class="addButton" disabled>add</button>
-    </form>
+
     <script src="main.js"></script>
 </body>
 </html>

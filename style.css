@@ -5,15 +5,22 @@
     font-family: arial;
     color:#1f487c;
 }
+h1{
+    text-align: center;
+    margin: 30px;
+}
+hr{
+    width: 90%;
+    display: inline-block;
+    margin-left: 5%;
+}
 .taskList{
     border-collapse: collapse;
     position: relative;
-    margin: auto;
+    margin: 30px auto;
+    max-width: 950px;
 }
-.taskList caption{
-    padding: 20px;
-    font-size: 24px;
-}
+
 .taskList thead tr td{
     background: #2d75c8;
     color:white;
@@ -23,20 +30,21 @@
     display: none;
 }
 .taskList  tr:nth-child(2n) td,
-.taskList  tr:nth-child(2n) select
-{
+.taskList  tr:nth-child(2n) select{
     background: #b9d8ff;
     color:#2d75c8;
 }
 .taskList .headName,
 .taskList .headDate{
     cursor: pointer;
+    min-width: 160px;
 }
 .taskList td{
     border:1px solid #505050;
     padding: 20px;
     position: relative;
     max-width: 300px;
+    min-width: 100px;
 }
 
 .taskList .date{
@@ -55,9 +63,9 @@ span.correct{
 .taskList .status:active{
     background: none;
     border:none;
-
-
 }
+
+
 .modal{
     position: fixed;
     top:0;
@@ -65,4 +73,46 @@ span.correct{
     left:0;
     right: 0;
     background: rgba(0,0,0,0.6);
+}
+.addTask{
+    min-width: 300px;
+    margin: 30px auto;
+    display:flex;
+    flex-wrap:wrap;
+    justify-content: center;
+
+}
+.addTask #taskName{
+    padding:15px;
+    border:1px solid #505050;
+    display:inline-block;
+}
+.addTask #taskDesc{
+    padding:15px;
+    border:1px solid #505050;
+    display:inline-block;
+}
+.addTask #taskDate{
+    padding:15px;
+    border:1px solid #505050;
+}
+.addTask .addButton{
+    background: none;
+    outline: none;
+    border:1px solid #505050;
+    padding: 15px;
+    cursor:pointer;
+}
+.addTask .addButton:disabled{
+    cursor: not-allowed;
+}
+
+@media (max-width: 900px) {
+    .taskList tr{
+        display: flex;
+        flex-direction: column;
+    }
+    .taskList thead{
+        display: none;
+    }
 }

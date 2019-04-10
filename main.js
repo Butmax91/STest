@@ -163,7 +163,13 @@ function correction(){
             correctStatus.innerHTML =
                 `
                 <select class="status" 
-                style="background: white;outline: none; border:none; width:100%; height: 100%"
+                style="background: white;
+                outline:none; 
+                border:none; 
+                width:100%;
+                height: 100% ;
+                cursor: ${ e.target.dataset.canbechanged !== 'true' ? 'not-allowed' : 'pointer'} 
+                 "
                ${(e.target.dataset.canbechanged !== 'true') ? 'disabled' : ''}
                 >
                          <option ${+e.path[2].children[1].dataset.status === 0 ? 'selected' : ''}>Очікується</option>
@@ -195,14 +201,18 @@ function correction(){
             corectRow.appendChild(exitButton);
             corectRow.appendChild(deleteTask);
             document.body.appendChild(corectRow);
+            document.body.style.overflow = 'hidden';
+
             corectRow.style.cssText =
                 `
-                position : absolute;
+                position : fixed;
                 top:0;
                 bottom:0;
                 left:0;
                 right:0;
-                background:rgba(0,0,0,0.6);                         
+                background:rgba(0,0,0,0.6); 
+                overflow:hidden;
+                                                  
                 `;
             coreactName.style.cssText =
                 `
@@ -215,9 +225,10 @@ function correction(){
                 border:none;
                 outline:none;
                 background:white;
-                 box-shadow: 0px 0px 0px 2px black;
-                
+                box-shadow: 0px 0px 0px 2px black;
+                cursor: ${ e.target.dataset.canbechanged !== 'true' ? 'not-allowed' : 'pointer'} 
                 `;
+
             correctStatus.style.cssText =
                 `
                 position:absolute;
@@ -228,8 +239,10 @@ function correction(){
                 margin : auto;
                 background:white;
                 box-shadow: 0px 0px 0px 2px black;
+                z-index=${e.target.dataset.canbechanged !== 'true' ? '10' : '0'} ;
                 
                 `;
+
             coreactDesc.style.cssText =
                 `
                 position:absolute;
@@ -242,6 +255,7 @@ function correction(){
                 outline:none;
                 box-shadow: 0px 0px 0px 2px black;
                 background:white;
+                cursor: ${ e.target.dataset.canbechanged !== 'true' ? 'not-allowed' : 'pointer'} 
                 `;
             coreactDate.style.cssText =
                 `
@@ -254,13 +268,14 @@ function correction(){
                 border:none;
                 outline:none;
                 background:white;
-                 box-shadow: 0px 0px 0px 2px black;
+                box-shadow: 0px 0px 0px 2px black;
+                cursor: ${ e.target.dataset.canbechanged !== 'true' ? 'not-allowed' : 'pointer'} 
                 `;
             changeButton.style.cssText =
                 `
                  position:absolute;
                  top:${e.path[2].children[3].getBoundingClientRect().y+e.path[2].children[3].getBoundingClientRect().height+10+'px'};
-                 left:${e.path[2].children[3].getBoundingClientRect().x +60+'px'};
+                 left:${e.path[2].children[3].getBoundingClientRect().x + e.path[2].children[3].getBoundingClientRect().width+-70+'px'};
                  padding:10px;
                  border:none;
                  outline:none;
@@ -270,8 +285,9 @@ function correction(){
             exitButton.style.cssText =
                 `
                  position:absolute;
-                 top:${e.path[2].children[3].getBoundingClientRect().y -10+'px'};
-                 left:${e.path[2].children[3].getBoundingClientRect().x +130+'px'};
+                 top:${e.path[2].getBoundingClientRect().y -45+'px'};
+                 left:${e.path[2].children[3].getBoundingClientRect().x +
+                      e.path[2].children[3].getBoundingClientRect().width -40 + 'px'};
                  padding:10px;
                  font-size:24px;
                  border:none;
@@ -284,18 +300,19 @@ function correction(){
             deleteTask.style.cssText =
                 `
                  position:absolute;
-                 top:${e.path[2].children[3].getBoundingClientRect().y +30+'px'};
-                 left:${e.path[2].children[3].getBoundingClientRect().x +130+'px'};
+                 top:${e.path[2].getBoundingClientRect().y +e.path[2].getBoundingClientRect().height +10 +'px'};
+                 left:${e.path[2].children[3].getBoundingClientRect().x +'px'};
                  padding:10px;
-                 border:none;
+                 border:1px;
                  outline:none;
-                 color:white;
-                 background:red;
+                 color:red;
+                 background:white;
                  cursor:pointer;
             
                 `;
             exitButton.addEventListener('click',()=>{
                 document.body.removeChild(corectRow);
+                document.body.style.overflow = 'scroll';
             });
             deleteTask.addEventListener('click',(event)=>{
                 for (let i = 0; i < data.length ; i++) {
@@ -306,6 +323,7 @@ function correction(){
                 }
                 localStorage.tasks = JSON.stringify(data);
                 document.body.removeChild(corectRow);
+                document.body.style.overflow = 'scroll';
                 drowTable();
 
             });
@@ -327,6 +345,7 @@ function correction(){
                 }
                 localStorage.tasks = JSON.stringify(data);
                 document.body.removeChild(corectRow);
+                document.body.style.overflow = 'scroll';
                 drowTable();
             })
 
@@ -334,3 +353,4 @@ function correction(){
     });
 }
 correction();
+
