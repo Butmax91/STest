@@ -122,7 +122,7 @@ function sortBy(){
         asc = asc*-1;
         sortName.style.transform = `rotate(${90*-asc +90+'deg'})`;
         data.sort((a,b)=>{
-            if (a.taskName > b.taskName)return asc;
+            if (a.taskName.toLocaleLowerCase() > b.taskName.toLocaleLowerCase())return asc;
             else return -asc;
         });
 
@@ -149,6 +149,7 @@ function correction(){
     const table = document.querySelector('.taskList');
 
     table.addEventListener('click',(e)=>{
+
         if(e.target.className === 'correct'){
             const data = checkLocalStorage();
             const corectRow = document.createElement('div');
@@ -181,17 +182,17 @@ function correction(){
             coreactDesc.disabled = e.target.dataset.canbechanged !== 'true';
             coreactDesc.value = e.path[2].children[2].innerText;
 
-            const coreactDate = document.createElement('textarea');
+            const coreactDate = document.createElement('input');
+            coreactDate.type = 'date';
             coreactDate.value = e.path[2].children[3].innerHTML.substring(0,10);
             coreactDate.disabled = (e.target.dataset.canbechanged !== 'true');
 
             const changeButton = document.createElement('button');
-            changeButton.innerText = 'Change';
+            changeButton.innerText = 'Змінити';
             const exitButton = document.createElement('button');
             exitButton.innerText = '✕';
             const deleteTask = document.createElement('button');
             deleteTask.innerText = 'Видалити';
-
 
             corectRow.appendChild(coreactName);
             corectRow.appendChild(correctStatus);
@@ -200,14 +201,36 @@ function correction(){
             corectRow.appendChild(changeButton);
             corectRow.appendChild(exitButton);
             corectRow.appendChild(deleteTask);
-            document.body.appendChild(corectRow);
-            document.body.style.overflow = 'hidden';
 
+            function getCoords(elem) {
+                // (1)
+                let box = elem.getBoundingClientRect();
+
+                let body = document.body;
+                var docEl = document.documentElement;
+
+                // (2)
+                let scrollTop = window.pageYOffset || docEl.scrollTop || body.scrollTop;
+                let scrollLeft = window.pageXOffset || docEl.scrollLeft || body.scrollLeft;
+
+                // (3)
+                let clientTop = docEl.clientTop || body.clientTop || 0;
+                let clientLeft = docEl.clientLeft || body.clientLeft || 0;
+
+                // (4)
+                let top = box.top + scrollTop - clientTop;
+                let left = box.left + scrollLeft - clientLeft;
+
+                return top;
+            }
+
+            document.body.appendChild(corectRow);
             corectRow.style.cssText =
                 `
-                position : fixed;
+                position : absolute;
                 top:0;
                 bottom:0;
+                height: ${document.body.offsetHeight+'px'};
                 left:0;
                 right:0;
                 background:rgba(0,0,0,0.6); 
@@ -217,7 +240,7 @@ function correction(){
             coreactName.style.cssText =
                 `
                 position:absolute;
-                top:${e.path[2].children[0].getBoundingClientRect().y+'px'};
+                top:${getCoords(e.path[2].children[0])+'px'};
                 left:${e.path[2].children[0].getBoundingClientRect().x+'px'};
                 width: ${e.path[2].children[0].getBoundingClientRect().width+'px'};
                 height: ${e.path[2].children[0].getBoundingClientRect().height+'px'};
@@ -232,7 +255,7 @@ function correction(){
             correctStatus.style.cssText =
                 `
                 position:absolute;
-                top:${e.path[2].children[1].getBoundingClientRect().y+'px'};
+                top:${getCoords(e.path[2].children[1])+'px'};
                 left:${e.path[2].children[1].getBoundingClientRect().x+'px'};
                 width: ${e.path[2].children[1].getBoundingClientRect().width+'px'};
                 height: ${e.path[2].children[1].getBoundingClientRect().height+'px'};
@@ -246,7 +269,7 @@ function correction(){
             coreactDesc.style.cssText =
                 `
                 position:absolute;
-                top:${e.path[2].children[2].getBoundingClientRect().y+'px'};
+                top:${getCoords(e.path[2].children[2])+'px'};
                 left:${e.path[2].children[2].getBoundingClientRect().x+'px'};
                 width: ${e.path[2].children[2].getBoundingClientRect().width+'px'};
                 height: ${e.path[2].children[2].getBoundingClientRect().height+'px'};
@@ -260,11 +283,12 @@ function correction(){
             coreactDate.style.cssText =
                 `
                 position:absolute;
-                top:${e.path[2].children[3].getBoundingClientRect().y+'px'};
+                top:${getCoords(e.path[2].children[3])+'px'};
                 left:${e.path[2].children[3].getBoundingClientRect().x+'px'};
                 width: ${e.path[2].children[3].getBoundingClientRect().width+'px'};
                 height: ${e.path[2].children[3].getBoundingClientRect().height+'px'};
                 padding:${getComputedStyle(e.path[2].children[3]).padding};
+                padding-right:0;
                 border:none;
                 outline:none;
                 background:white;
@@ -274,8 +298,8 @@ function correction(){
             changeButton.style.cssText =
                 `
                  position:absolute;
-                 top:${e.path[2].children[3].getBoundingClientRect().y+e.path[2].children[3].getBoundingClientRect().height+10+'px'};
-                 left:${e.path[2].children[3].getBoundingClientRect().x + e.path[2].children[3].getBoundingClientRect().width+-70+'px'};
+                 top:${getCoords(e.path[2].children[3])+e.path[2].children[3].getBoundingClientRect().height+10+'px'};
+                 left:${e.path[2].children[3].getBoundingClientRect().x + e.path[2].children[3].getBoundingClientRect().width+-67+'px'};
                  padding:10px;
                  border:none;
                  outline:none;
@@ -285,7 +309,7 @@ function correction(){
             exitButton.style.cssText =
                 `
                  position:absolute;
-                 top:${e.path[2].getBoundingClientRect().y -45+'px'};
+                 top:${getCoords(e.path[2]) -45+'px'};
                  left:${e.path[2].children[3].getBoundingClientRect().x +
                       e.path[2].children[3].getBoundingClientRect().width -40 + 'px'};
                  padding:10px;
@@ -300,7 +324,7 @@ function correction(){
             deleteTask.style.cssText =
                 `
                  position:absolute;
-                 top:${e.path[2].getBoundingClientRect().y +e.path[2].getBoundingClientRect().height +10 +'px'};
+                 top:${getCoords(e.path[2])+e.path[2].getBoundingClientRect().height +10 +'px'};
                  left:${e.path[2].children[3].getBoundingClientRect().x +'px'};
                  padding:10px;
                  border:1px;
@@ -312,7 +336,6 @@ function correction(){
                 `;
             exitButton.addEventListener('click',()=>{
                 document.body.removeChild(corectRow);
-                document.body.style.overflow = 'scroll';
             });
             deleteTask.addEventListener('click',(event)=>{
                 for (let i = 0; i < data.length ; i++) {
@@ -323,7 +346,6 @@ function correction(){
                 }
                 localStorage.tasks = JSON.stringify(data);
                 document.body.removeChild(corectRow);
-                document.body.style.overflow = 'scroll';
                 drowTable();
 
             });

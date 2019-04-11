@@ -3,7 +3,10 @@
     margin: 0;
     box-sizing: border-box;
     font-family: arial;
-    color:#1f487c;
+    color: #152e52;
+}
+body{
+    min-height: 100vh;
 }
 h1{
     text-align: center;
@@ -22,8 +25,9 @@ hr{
 }
 
 .taskList thead tr td{
-    background: #2d75c8;
+    background: #152e52;
     color:white;
+    border-color:white;
 }
 .taskList thead tr td span{
     color:white;
@@ -31,13 +35,27 @@ hr{
 }
 .taskList  tr:nth-child(2n) td,
 .taskList  tr:nth-child(2n) select{
-    background: #b9d8ff;
-    color:#2d75c8;
+    background: #1f487c;
+    color:#fff;
+    border-color:white;
+}
+.taskList  tr:nth-child(2n) td span.correct{
+    color:white;
+}
+.taskList  tr:nth-child(2n) td span.was_changed{
+    background: white;
+    color:red;
 }
 .taskList .headName,
 .taskList .headDate{
     cursor: pointer;
     min-width: 160px;
+}
+.taskList td:first-child{
+    border-left-color: transparent;
+}
+.taskList td:last-child{
+    border-right-color: transparent;
 }
 .taskList td{
     border:1px solid #505050;
@@ -64,7 +82,16 @@ span.correct{
     background: none;
     border:none;
 }
-
+.taskList .was_changed{
+    color:red;
+    font-size: 10px;
+    display:block;
+    position: absolute;
+    top:1px;
+    right:1px;
+    padding: 3px;
+    border:1px solid red;
+}
 
 .modal{
     position: fixed;
@@ -86,15 +113,27 @@ span.correct{
     padding:15px;
     border:1px solid #505050;
     display:inline-block;
+    margin: 5px;
+    outline: none;
+    min-width: 300px;
 }
 .addTask #taskDesc{
     padding:15px;
     border:1px solid #505050;
     display:inline-block;
+    margin: 5px;
+    outline: none;
+    min-width: 300px;
+}
+.addTask #taskDesc::placeholder{
+
 }
 .addTask #taskDate{
     padding:15px;
     border:1px solid #505050;
+    margin: 5px;
+    outline: none;
+    min-width: 300px;
 }
 .addTask .addButton{
     background: none;
@@ -102,6 +141,7 @@ span.correct{
     border:1px solid #505050;
     padding: 15px;
     cursor:pointer;
+    margin: 5px;
 }
 .addTask .addButton:disabled{
     cursor: not-allowed;
