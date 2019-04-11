@@ -151,6 +151,7 @@ function correction(){
     table.addEventListener('click',(e)=>{
 
         if(e.target.className === 'correct'){
+
             const data = checkLocalStorage();
             const corectRow = document.createElement('div');
             const coreactName = document.createElement('textarea');
@@ -334,6 +335,12 @@ function correction(){
                  cursor:pointer;
             
                 `;
+
+            window.addEventListener('resize',()=>{
+                if (document.body.children.length === 6) {
+                    document.body.removeChild(corectRow);
+                }
+            });
             exitButton.addEventListener('click',()=>{
                 document.body.removeChild(corectRow);
             });
@@ -367,7 +374,6 @@ function correction(){
                 }
                 localStorage.tasks = JSON.stringify(data);
                 document.body.removeChild(corectRow);
-                document.body.style.overflow = 'scroll';
                 drowTable();
             })
 

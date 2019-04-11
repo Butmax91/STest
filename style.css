@@ -134,6 +134,7 @@ span.correct{
     margin: 5px;
     outline: none;
     min-width: 300px;
+    background: white;
 }
 .addTask .addButton{
     background: none;
@@ -148,11 +149,89 @@ span.correct{
 }
 
 @media (max-width: 900px) {
+    .taskList tbody{
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
     .taskList tr{
         display: flex;
         flex-direction: column;
+        margin: 10px;
+    }
+    .taskList tr:before{
+        content: 'Завдання';
+        text-align: center;
+        padding: 5px;
+    }
+    .taskList tr td{
+        min-width: 300px;
+    }
+    .taskList tr td:nth-child(1):before{
+        content: "Ім'я";
+        font-size: 12px;
+        position: absolute;
+        display: block;
+        width: 15px;
+        left: 0;
+        top:0;
+        height: 100%;
+        transform: rotate(180deg);
+        writing-mode: vertical-lr;
+        text-align: center;
+
+    }
+    .taskList tr td:nth-child(2):before{
+        content: 'Статус';
+        font-size: 12px;
+        position: absolute;
+        display: block;
+        width: 15px;
+        left: 0;
+        top:0;
+        height: 100%;
+        transform: rotate(180deg);
+        writing-mode: vertical-lr;
+        text-align: center;
+
+    }
+    .taskList tr td:nth-child(3):before{
+        content: 'Завдання';
+        font-size: 12px;
+        position: absolute;
+        display: block;
+        width: 15px;
+        left: 0;
+        top:0;
+        height: 100%;
+        transform: rotate(180deg);
+        writing-mode: vertical-lr;
+        text-align: center;
+
+    }
+    .taskList tr td:nth-child(4):before{
+        content: 'Дата';
+        font-size: 12px;
+        position: absolute;
+        display: block;
+        width: 15px;
+        left: 0;
+        top:0;
+        height: 100%;
+        transform: rotate(180deg);
+        writing-mode: vertical-lr;
+        text-align: center;
+
+    }
+    .taskList td:first-child{
+        border-left-color: inherit;
+    }
+    .taskList td:last-child{
+        border-right-color: inherit;
     }
     .taskList thead{
         display: none;
+    }
+    .addTask{
     }
 }
