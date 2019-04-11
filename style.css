@@ -160,7 +160,7 @@ span.correct{
         margin: 10px;
     }
     .taskList tr:before{
-        content: 'Завдання';
+        content: 'Справа';
         text-align: center;
         padding: 5px;
     }
@@ -196,7 +196,7 @@ span.correct{
 
     }
     .taskList tr td:nth-child(3):before{
-        content: 'Завдання';
+        content: 'Справа';
         font-size: 12px;
         position: absolute;
         display: block;
